@@ -35,3 +35,6 @@ Please follow steps below:
      - **Password**: `admin`
    
      New example password `Password1234`
+
+
+I'm writing notes of my journey [here](./notes/NOTES.md)
