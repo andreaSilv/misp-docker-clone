@@ -11,12 +11,18 @@ HOST_FORWARD="localhost"
 def proxy(path):
     # Forward the request to localhost:8080
     url = "https://" + HOST_FORWARD + f"/{path}"
-
-    body = request.get_data().decode("utf-8").replace(HOST, HOST_FORWARD)
+    body = None
+    try:
+        body = request.get_data().decode("utf-8").replace(HOST, HOST_FORWARD)
+        body = body.replace("http://", "https://")
+    except:
+        body = request.get_data()
+         
 
     headers = dict(request.headers)
     for i in headers:
         headers[i] = headers[i].replace(HOST, HOST_FORWARD)
+        headers[i] = headers[i].replace("http://", "https://")
 
     # Remove host header to avoid conflicts
     headers.pop('Host', None)
@@ -36,8 +42,16 @@ def proxy(path):
     
     for i in range(len(headers)):
         headers[i] = (headers[i][0].replace(HOST_FORWARD, HOST), headers[i][1].replace(HOST_FORWARD, HOST))
+        headers[i] = (headers[i][0].replace(HOST_FORWARD, HOST), headers[i][1].replace("https://", "http://"))
+        if headers[i][1].endswith('.map'):
+            headers[i] = (headers[i][0], "http://" + HOST)
 
-    responseBody = resp.content.decode("utf-8").replace(HOST_FORWARD, HOST)
+    responseBody = None
+    try:
+        responseBody = resp.content.decode("utf-8").replace(HOST_FORWARD, HOST)
+        responseBody = responseBody.replace("https://", "http://")
+    except:
+        responseBody = resp.content
 
     return Response(responseBody, resp.status_code, headers)
 
