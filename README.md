@@ -21,7 +21,6 @@ Please follow steps below:
 3. Run the container
    ```bash
    docker run -it --rm \
-      -p 8443:8443 \
       -p 8080:8080 \
       -p 3306:3306 \
       -p 6666:6666 \
@@ -37,4 +36,4 @@ Please follow steps below:
      New example password `Password1234`
 
 
-I'm writing notes of my journey [here](./notes/NOTES.md)
+I'm writing journey notes [here](./notes/NOTES.md)

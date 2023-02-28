@@ -20,7 +20,7 @@ VOLUME /var/lib/mysql
 #VOLUME /etc/ssl/private
 
 # 80/443 - MISP web server, 3306 - mysql, 6379 - redis, 6666 - MISP modules, 50000 - MISP ZeroMQ
-EXPOSE 8080 8443 3306 6379 6666 50000
+EXPOSE 8080 3306 6379 6666 50000
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBIAN_PRIORITY critical
@@ -100,7 +100,7 @@ RUN mkdir /var/www/.composer && chown -R www-data:www-data /var/www/.composer ; 
     sudo chmod -R g+ws /var/www/MISP/app/files ; \
     sudo chmod -R g+ws /var/www/MISP/app/files/scripts/tmp ; \
     openssl req -x509 -nodes -days 3650 -newkey rsa:4096 -keyout /etc/ssl/private/misp.key -out /etc/ssl/private/misp.crt -batch ; \
-    echo "<VirtualHost *:8080>" > /etc/apache2/sites-available/000-default.conf ; \
+    echo "<VirtualHost *:80>" > /etc/apache2/sites-available/000-default.conf ; \
     echo "ServerName $MISP_FQDN" >> /etc/apache2/sites-available/000-default.conf ; \
     echo "Redirect permanent / https://$MISP_FQDN" >> /etc/apache2/sites-available/000-default.conf ; \
     echo "LogLevel warn" >> /etc/apache2/sites-available/000-default.conf ; \
@@ -108,7 +108,7 @@ RUN mkdir /var/www/.composer && chown -R www-data:www-data /var/www/.composer ; 
     echo "CustomLog /var/log/apache2/misp_access.log combined" >> /etc/apache2/sites-available/000-default.conf ; \
     echo "ServerSignature Off" >> /etc/apache2/sites-available/000-default.conf ; \
     echo "</VirtualHost>" >> /etc/apache2/sites-available/000-default.conf ; \
-    echo "<VirtualHost *:8443>" > /etc/apache2/sites-available/default-ssl.conf ; \
+    echo "<VirtualHost *:443>" > /etc/apache2/sites-available/default-ssl.conf ; \
     echo "ServerAdmin $MISP_EMAIL" >> /etc/apache2/sites-available/default-ssl.conf ; \
     echo "ServerName $MISP_FQDN" >> /etc/apache2/sites-available/default-ssl.conf ; \
     echo "DocumentRoot /var/www/MISP/app/webroot" >> /etc/apache2/sites-available/default-ssl.conf ; \
@@ -208,9 +208,15 @@ RUN echo "/var/www/MISP/app/tmp/logs/resque-*-error.log {" > misp ; \
 WORKDIR /var/www/MISP
 COPY supervisord.conf /etc/supervisor/conf.d/
 COPY ports.conf /etc/apache2
+COPY exec.sh .
+COPY requirements.txt .
+COPY proxy.py .
 
 #>&2 echo "The default user = "admin@admin.test" | The default password = admin" ; \
 # To change it:
 #echo "/var/www/MISP/app/Console/cake Password 'admin@admin.test' '@dmin1!'" >> /root/init-db ; \
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+RUN pip install -r requirements.txt
+
+CMD [ "./exec.sh" ]
+# CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
