@@ -1,7 +1,6 @@
 MISP API documentation [here](https://www.misp-project.org/openapi) or if you want check it from your started container [here](https://localhost:8443/api/openapi)
 
->**IMPORTANT** - Without something in the middle that would replace the port
->you can only fire request inside the container at localhost
+>**IMPORTANT** - Keep in mind that between browser and MISP server there's a python forwarder that string replace the hostname to make possible to ACN's laptop the execution
 
 # Requirements
 

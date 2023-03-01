@@ -1,7 +1,10 @@
 This repository is born to keep all changes I'm doing on [original docker image](https://github.com/harvard-itsecurity/docker-misp).
 
+> **IMPORTANT:** This repo is not ready for production. As you can see in my notes there's a small code part added on top that's bad grade code - If you are interested to deploy MISP on production on a container I strongly suggest to use [official MISP image](https://github.com/MISP/misp-docker)
+
 # How to run
 
+This is a ready to run repository.
 Please follow steps below:
 
 1. Initialize database
@@ -35,5 +38,4 @@ Please follow steps below:
    
      New example password `Password1234`
 
-
-I'm writing journey notes [here](./notes/NOTES.md)
+## I'm writing my journey notes [here](./notes/NOTES.md)
