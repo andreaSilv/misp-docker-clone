@@ -216,6 +216,8 @@ COPY proxy.py .
 # To change it:
 #echo "/var/www/MISP/app/Console/cake Password 'admin@admin.test' '@dmin1!'" >> /root/init-db ; \
 
+RUN chmod +x exec.sh
+
 RUN pip install -r requirements.txt
 
 CMD [ "./exec.sh" ]
